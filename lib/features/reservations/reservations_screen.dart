@@ -5,6 +5,7 @@ import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/pd_card.dart';
 import 'reservation_providers.dart';
 import '../../core/models/reservation.dart';
+import 'package:go_router/go_router.dart';
 
 class ReservationsScreen extends ConsumerStatefulWidget {
   const ReservationsScreen({super.key});
@@ -27,6 +28,10 @@ class _ReservationsScreenState extends ConsumerState<ReservationsScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/dashboard'),
+        ),
         title: Text('Reservations',
             style: GoogleFonts.montserrat(
                 color: AppTheme.text1,
@@ -99,12 +104,25 @@ class _AddReservationSheet extends StatefulWidget {
 class _AddReservationSheetState extends State<_AddReservationSheet> {
   final _courtCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
+  DateTime _selectedDate = DateTime.now().add(const Duration(days: 1));
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() => _selectedDate = picked);
+    }
+  }
 
   void _save() {
     if (_courtCtrl.text.isEmpty) return;
     final r = Reservation(
       courtName: _courtCtrl.text,
-      date: DateTime.now().add(const Duration(days: 1)), // Mock date
+      date: _selectedDate,
       startTime: DateTime.now(),
       endTime: DateTime.now().add(const Duration(hours: 1)),
       status: 'Upcoming',
@@ -120,10 +138,31 @@ class _AddReservationSheetState extends State<_AddReservationSheet> {
       padding: EdgeInsets.fromLTRB(24, 24, 24, MediaQuery.of(context).viewInsets.bottom + 24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('New Reservation', style: GoogleFonts.montserrat(color: AppTheme.text1, fontWeight: FontWeight.w700, fontSize: 20)),
           const SizedBox(height: 20),
           TextField(controller: _courtCtrl, decoration: const InputDecoration(labelText: 'Court Name'), style: GoogleFonts.inter(color: AppTheme.text1)),
+          const SizedBox(height: 12),
+          Text('Date', style: GoogleFonts.inter(color: AppTheme.text2, fontWeight: FontWeight.w500, fontSize: 13)),
+          const SizedBox(height: 6),
+          InkWell(
+            onTap: _pickDate,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                border: Border.all(color: AppTheme.border),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('${_selectedDate.month}/${_selectedDate.day}/${_selectedDate.year}', style: GoogleFonts.inter(color: AppTheme.text1, fontSize: 15)),
+                  const Icon(Icons.calendar_today, color: AppTheme.text2, size: 18),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 12),
           TextField(controller: _notesCtrl, decoration: const InputDecoration(labelText: 'Notes'), style: GoogleFonts.inter(color: AppTheme.text1)),
           const SizedBox(height: 20),

@@ -1,18 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:csv/csv.dart';
+import 'package:pdf/widgets.dart' as pw;
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/pd_card.dart';
+import '../sessions/session_providers.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notifications = true;
   bool _reminders = true;
+
+  Future<void> _exportCSV() async {
+    try {
+      final sessions = ref.read(sessionListProvider);
+      List<List<dynamic>> rows = [];
+      rows.add(["Date", "Start", "End", "Opponents", "Result", "Notes", "Type"]);
+      for (var s in sessions) {
+        rows.add([
+          s.date.toIso8601String(),
+          s.startTime.toIso8601String(),
+          s.endTime.toIso8601String(),
+          s.opponents.join(', '),
+          s.result ?? '',
+          s.notes,
+          s.sessionType ?? ''
+        ]);
+      }
+      String csv = const ListToCsvConverter().convert(rows);
+      final dir = await getApplicationDocumentsDirectory();
+      final path = '${dir.path}/pickledesk_sessions.csv';
+      final file = File(path);
+      await file.writeAsString(csv);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Exported CSV to $path', style: const TextStyle(fontSize: 12))));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to export CSV: $e', style: const TextStyle(fontSize: 12))));
+      }
+    }
+  }
+
+  Future<void> _exportPDF() async {
+    try {
+      final sessions = ref.read(sessionListProvider);
+      final pdf = pw.Document();
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) {
+            return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text('PickleDesk Report', style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                pw.SizedBox(height: 20),
+                pw.Text('Total Sessions: ${sessions.length}', style: pw.TextStyle(fontSize: 16)),
+              ]
+            );
+          }
+        )
+      );
+      final dir = await getApplicationDocumentsDirectory();
+      final path = '${dir.path}/pickledesk_report.pdf';
+      final file = File(path);
+      await file.writeAsBytes(await pdf.save());
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Exported PDF to $path', style: const TextStyle(fontSize: 12))));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to export PDF: $e', style: const TextStyle(fontSize: 12))));
+      }
+    }
+  }
 
   static const _themes = [
     (id: 'default', label: 'Default', desc: 'Deep green · Pickleball palette',
@@ -29,6 +99,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/dashboard'),
+        ),
         title: Text('Settings',
             style: GoogleFonts.montserrat(
                 color: AppTheme.text1, fontWeight: FontWeight.w700, fontSize: 22)),
@@ -217,7 +291,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   fontSize: 15)),
                           trailing: const Icon(Icons.chevron_right,
                               color: AppTheme.text2),
-                          onTap: () {},
+                          onTap: () {
+                            if (i == 0) _exportCSV();
+                            if (i == 1) _exportPDF();
+                            if (i > 1) {
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Coming soon!')));
+                            }
+                          },
                         ),
                       ],
                     );

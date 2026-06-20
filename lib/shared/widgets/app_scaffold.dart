@@ -317,8 +317,8 @@ class _MobileShell extends StatelessWidget {
         ),
         child: SafeArea(
           top: false,
-          child: SizedBox(
-            height: 64,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: List.generate(_tabs.length, (i) {
                 final tab = _tabs[i];
