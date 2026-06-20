@@ -8,6 +8,7 @@ class Court {
   final bool isIndoor;
   final String surfaceType;
   final String notes;
+  final bool isFavorite;
 
   Court({
     String? id,
@@ -16,6 +17,7 @@ class Court {
     this.isIndoor = false,
     this.surfaceType = '',
     this.notes = '',
+    this.isFavorite = false,
   }) : id = id ?? const Uuid().v4();
 }
 
@@ -32,6 +34,7 @@ class CourtAdapter extends TypeAdapter<Court> {
       isIndoor: reader.readBool(),
       surfaceType: reader.readString(),
       notes: reader.readString(),
+      isFavorite: reader.readBool(),
     );
   }
 
@@ -43,5 +46,6 @@ class CourtAdapter extends TypeAdapter<Court> {
     writer.writeBool(obj.isIndoor);
     writer.writeString(obj.surfaceType);
     writer.writeString(obj.notes);
+    writer.writeBool(obj.isFavorite);
   }
 }

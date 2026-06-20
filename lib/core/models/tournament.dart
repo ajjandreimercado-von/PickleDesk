@@ -1,25 +1,29 @@
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
-enum TournamentFormat { singleElimination, doubleElimination, roundRobin }
-
 class Tournament {
   final String id;
   final String name;
   final DateTime date;
-  final TournamentFormat format;
-  final double entryFee;
+  final String type;
   final String location;
+  final double entryFee;
+  final String status;
   final List<String> participants;
+  final String? result;
+  final Map<String, String> winners;
 
   Tournament({
     String? id,
     required this.name,
     required this.date,
-    required this.format,
-    required this.entryFee,
+    required this.type,
     required this.location,
+    required this.entryFee,
+    required this.status,
     this.participants = const [],
+    this.result,
+    this.winners = const {},
   }) : id = id ?? const Uuid().v4();
 }
 
@@ -33,10 +37,13 @@ class TournamentAdapter extends TypeAdapter<Tournament> {
       id: reader.readString(),
       name: reader.readString(),
       date: DateTime.fromMillisecondsSinceEpoch(reader.readInt()),
-      format: TournamentFormat.values[reader.readInt()],
-      entryFee: reader.readDouble(),
+      type: reader.readString(),
       location: reader.readString(),
+      entryFee: reader.readDouble(),
+      status: reader.readString(),
       participants: reader.readStringList(),
+      result: reader.readString(),
+      winners: Map<String, String>.from(reader.readMap()),
     );
   }
 
@@ -45,9 +52,12 @@ class TournamentAdapter extends TypeAdapter<Tournament> {
     writer.writeString(obj.id);
     writer.writeString(obj.name);
     writer.writeInt(obj.date.millisecondsSinceEpoch);
-    writer.writeInt(obj.format.index);
-    writer.writeDouble(obj.entryFee);
+    writer.writeString(obj.type);
     writer.writeString(obj.location);
+    writer.writeDouble(obj.entryFee);
+    writer.writeString(obj.status);
     writer.writeStringList(obj.participants);
+    writer.writeString(obj.result ?? '');
+    writer.writeMap(obj.winners);
   }
 }

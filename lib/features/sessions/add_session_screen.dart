@@ -21,6 +21,7 @@ class _AddSessionScreenState extends ConsumerState<AddSessionScreen> {
   TimeOfDay _startTime = TimeOfDay.now();
   TimeOfDay _endTime = TimeOfDay.fromDateTime(DateTime.now().add(const Duration(hours: 1)));
   String? _selectedCourtId;
+  String _result = 'D';
 
   void _saveSession() {
     if (_formKey.currentState!.validate() && _selectedCourtId != null) {
@@ -40,6 +41,8 @@ class _AddSessionScreenState extends ConsumerState<AddSessionScreen> {
         endTime: end,
         opponents: opponentsList,
         notes: _notesController.text.trim(),
+        result: _result,
+        sessionType: 'Match',
       );
 
       ref.read(sessionListProvider.notifier).addSession(newSession);
@@ -178,6 +181,18 @@ class _AddSessionScreenState extends ConsumerState<AddSessionScreen> {
                   hintText: 'e.g. Alex, Sam',
                   prefixIcon: Icon(Icons.people_outline),
                 ),
+              ),
+              
+              const SizedBox(height: 24),
+              _buildSectionTitle('Result'),
+              SegmentedButton<String>(
+                segments: const [
+                  ButtonSegment(value: 'W', label: Text('Win')),
+                  ButtonSegment(value: 'L', label: Text('Loss')),
+                  ButtonSegment(value: 'D', label: Text('Draw/Practice')),
+                ],
+                selected: {_result},
+                onSelectionChanged: (set) => setState(() => _result = set.first),
               ),
               
               const SizedBox(height: 24),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../core/theme/app_theme.dart';
+import '../../shared/widgets/pd_card.dart';
 import 'court_providers.dart';
 
 class CourtsScreen extends ConsumerWidget {
@@ -12,113 +15,232 @@ class CourtsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Courts', style: TextStyle(fontWeight: FontWeight.bold)),
-        actions: [
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-        ],
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('My locations',
+                style: GoogleFonts.inter(
+                    color: AppTheme.text2, fontSize: 12)),
+            Text('Courts',
+                style: GoogleFonts.montserrat(
+                    color: AppTheme.text1,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 22)),
+          ],
+        ),
+        backgroundColor: Color(0xE0111410),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            child: Text('My Courts', style: Theme.of(context).textTheme.titleMedium),
-          ),
-          Expanded(
-            child: courts.isEmpty
-                ? const Center(child: Text('No courts added', style: TextStyle(color: Colors.white54)))
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    itemCount: courts.length,
-                    itemBuilder: (context, index) {
-                      final court = courts[index];
-                      return Container(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).cardTheme.color,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFF253028)),
+      body: LayoutBuilder(builder: (context, constraints) {
+        final cols = constraints.maxWidth > 700 ? 2 : 1;
+        return CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+              sliver: courts.isEmpty
+                  ? SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 64),
+                        child: Center(
+                          child: Column(children: [
+                            Icon(Icons.sports_tennis,
+                                size: 48, color: AppTheme.text3),
+                            const SizedBox(height: 12),
+                            Text('No courts added yet',
+                                style: GoogleFonts.inter(
+                                    color: AppTheme.text3, fontSize: 14)),
+                          ]),
                         ),
-                        child: Row(
-                          children: [
-                            // Placeholder for Court Image
-                            Container(
-                              width: 80,
-                              height: 80,
-                              margin: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                              ),
-                              child: const Icon(Icons.sports_tennis, color: Colors.green),
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                    )
+                  : SliverGrid(
+                      delegate: SliverChildBuilderDelegate(
+                        (ctx, i) {
+                          final court = courts[i];
+                          return PDCard(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(court.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white)),
-                                        const Icon(Icons.favorite, color: Colors.red, size: 16),
-                                      ],
+                                    Container(
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        color: court.isFavorite == true
+                                            ? AppTheme.primaryDark
+                                            : AppTheme.surface2,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Icon(Icons.sports_tennis,
+                                          color: court.isFavorite == true
+                                              ? AppTheme.primary
+                                              : AppTheme.text2),
                                     ),
-                                    Text(court.isIndoor ? 'Indoor' : 'Outdoor', style: const TextStyle(color: Colors.white54, fontSize: 12)),
-                                    const SizedBox(height: 12),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Text('24', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                                            const Text('Sessions', style: TextStyle(fontSize: 10, color: Colors.white54)),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          children: [
-                                            const Text('May 21', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                                            const Text('Last played', style: TextStyle(fontSize: 10, color: Colors.white54)),
-                                          ],
-                                        ),
-                                      ],
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(court.name,
+                                                    style: GoogleFonts
+                                                        .montserrat(
+                                                      color: AppTheme.text1,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                    )),
+                                              ),
+                                              if (court.isFavorite == true)
+                                                Container(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 2),
+                                                  decoration: BoxDecoration(
+                                                    color: AppTheme.primaryDark,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20),
+                                                  ),
+                                                  child: Text('Favorite',
+                                                      style: GoogleFonts.inter(
+                                                          color: AppTheme.primary,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w700)),
+                                                ),
+                                            ],
+                                          ),
+                                          Text(
+                                            '${court.isIndoor ? 'Indoor' : 'Outdoor'} · ${court.surfaceType}',
+                                            style: GoogleFonts.inter(
+                                                color: AppTheme.text2,
+                                                fontSize: 13),
+                                          ),
+                                          if (court.location.isNotEmpty)
+                                            Text(court.location,
+                                                style: GoogleFonts.inter(
+                                                    color: AppTheme.text3,
+                                                    fontSize: 12)),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
+                                const SizedBox(height: 12),
+                                Divider(
+                                    color: AppTheme.border.withValues(alpha: 0.6),
+                                    height: 1),
+                                const SizedBox(height: 12),
+                                Row(
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('PLAYED',
+                                            style: GoogleFonts.inter(
+                                                color: AppTheme.text3,
+                                                fontSize: 10,
+                                                letterSpacing: 0.8)),
+                                        Text('0x',
+                                            style: GoogleFonts.montserrat(
+                                                color: AppTheme.text1,
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: 18)),
+                                      ],
+                                    ),
+                                    const SizedBox(width: 24),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text('LAST VISIT',
+                                            style: GoogleFonts.inter(
+                                                color: AppTheme.text3,
+                                                fontSize: 10,
+                                                letterSpacing: 0.8)),
+                                        Text('—',
+                                            style: GoogleFonts.inter(
+                                                color: AppTheme.text2,
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    GestureDetector(
+                                      onTap: () => ref
+                                          .read(courtListProvider.notifier)
+                                          .deleteCourt(court.id),
+                                      child: Icon(Icons.delete_outline,
+                                          color: AppTheme.loseText
+                                              .withValues(alpha: 0.7),
+                                          size: 20),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 16.0),
-                              child: Icon(Icons.chevron_right, color: Colors.white54),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                          );
+                        },
+                        childCount: courts.length,
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: cols,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        childAspectRatio: cols == 2 ? 1.4 : 1.8,
+                      ),
+                    ),
+            ),
+
+            // Dashed Add Court button
+            SliverToBoxAdapter(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: GestureDetector(
+                  onTap: () => context.push('/add-court'),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: AppTheme.border,
+                          style: BorderStyle.solid,
+                          width: 1.5),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('+',
+                            style: GoogleFonts.montserrat(
+                                color: AppTheme.primary,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700)),
+                        const SizedBox(width: 8),
+                        Text('Add Court',
+                            style: GoogleFonts.inter(
+                                color: AppTheme.text2,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    ),
                   ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => context.push('/add-court'),
-                icon: const Icon(Icons.add),
-                label: const Text('Add Court'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+            const SliverToBoxAdapter(child: SizedBox(height: 80)),
+          ],
+        );
+      }),
     );
   }
 }

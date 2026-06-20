@@ -22,12 +22,10 @@ class PickleDeskApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(goRouterProvider);
-
     return MaterialApp.router(
       title: 'PickleDesk',
       theme: AppTheme.darkTheme, // Force dark theme
-      routerConfig: router,
+      routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );
   }

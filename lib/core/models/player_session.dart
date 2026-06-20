@@ -9,6 +9,8 @@ class PlayerSession {
   final DateTime endTime;
   final List<String> opponents;
   final String notes;
+  final String? sessionType;
+  final String? result;
 
   PlayerSession({
     String? id,
@@ -18,6 +20,8 @@ class PlayerSession {
     required this.endTime,
     this.opponents = const [],
     this.notes = '',
+    this.sessionType,
+    this.result,
   }) : id = id ?? const Uuid().v4();
 
   Duration get duration => endTime.difference(startTime);
@@ -37,6 +41,8 @@ class PlayerSessionAdapter extends TypeAdapter<PlayerSession> {
       endTime: DateTime.fromMillisecondsSinceEpoch(reader.readInt()),
       opponents: reader.readStringList(),
       notes: reader.readString(),
+      sessionType: reader.readString(),
+      result: reader.readString(),
     );
   }
 
@@ -49,5 +55,7 @@ class PlayerSessionAdapter extends TypeAdapter<PlayerSession> {
     writer.writeInt(obj.endTime.millisecondsSinceEpoch);
     writer.writeStringList(obj.opponents);
     writer.writeString(obj.notes);
+    writer.writeString(obj.sessionType ?? '');
+    writer.writeString(obj.result ?? '');
   }
 }
