@@ -25,8 +25,10 @@ class _AppScaffoldState extends State<AppScaffold> {
   void didUpdateWidget(AppScaffold oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.navigationShell.currentIndex != widget.navigationShell.currentIndex) {
-      if ((_pageController.page?.round() ?? 0) != widget.navigationShell.currentIndex) {
-        _pageController.jumpToPage(widget.navigationShell.currentIndex);
+      if (_pageController.hasClients) {
+        if ((_pageController.page?.round() ?? 0) != widget.navigationShell.currentIndex) {
+          _pageController.jumpToPage(widget.navigationShell.currentIndex);
+        }
       }
     }
   }

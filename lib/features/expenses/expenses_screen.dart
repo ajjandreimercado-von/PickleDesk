@@ -296,7 +296,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
           ),
           const SizedBox(height: 12),
           DropdownButtonFormField<String>(
-            value: _category,
+            initialValue: _category,
             dropdownColor: AppTheme.surface2,
             items: ['Court Fees', 'Tournament Fees', 'Equipment', 'Coaching', 'Miscellaneous']
                 .map((c) => DropdownMenuItem(value: c, child: Text(c, style: GoogleFonts.inter(color: AppTheme.text1))))

@@ -194,7 +194,7 @@ class _TournamentsScreenState extends ConsumerState<TournamentsScreen> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -221,9 +221,8 @@ class _CreateTournamentState extends State<_CreateTournament> {
   String _date = '';
   String _location = '';
   String _entryFee = '';
-  List<String> _players = ['You'];
+  final List<String> _players = ['You'];
   final TextEditingController _playerCtrl = TextEditingController();
-  Map<String, String> _winners = {};
 
   final _formats = [
     (id: 'Single Elimination', label: 'Single Elimination', tag: 'Most Common', desc: "One loss and you're out. The fastest format — perfect for day-of tournaments.", rules: ["Players/teams are seeded into a bracket", "Lose once → eliminated immediately", "Games to 11, win by 2", "Winner advances; bracket shrinks each round"], bestFor: '4 – 32 players · Quick events'),

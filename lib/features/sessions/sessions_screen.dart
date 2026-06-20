@@ -159,7 +159,7 @@ class _SessionsScreenState extends ConsumerState<SessionsScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(dateStr,
+                                  Text('$dateStr · $timeStr',
                                       style: GoogleFonts.montserrat(
                                           color: AppTheme.text1,
                                           fontWeight: FontWeight.w600,
