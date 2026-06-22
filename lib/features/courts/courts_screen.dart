@@ -123,11 +123,6 @@ class CourtsScreen extends ConsumerWidget {
                                                 color: AppTheme.text2,
                                                 fontSize: 13),
                                           ),
-                                          if (court.location.isNotEmpty)
-                                            Text(court.location,
-                                                style: GoogleFonts.inter(
-                                                    color: AppTheme.text3,
-                                                    fontSize: 12)),
                                         ],
                                       ),
                                     ),

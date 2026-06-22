@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // ── Brand colors (exactly from frontend theme.css) ──────────────────────────
+  // ── Brand colors (Default dark-green) ──────────────────────────────────────
   static const Color background    = Color(0xFF111410);
   static const Color surface       = Color(0xFF1d201c);
   static const Color surface2      = Color(0xFF282b26);
@@ -19,6 +19,15 @@ class AppTheme {
   static const Color loseBg        = Color(0xFF3d1f2a);
   static const Color loseText      = Color(0xFFffaac8);
   static const Color accentPurple  = Color(0xFF474649);
+
+  /// Dispatch the correct ThemeData for a given theme ID.
+  static ThemeData themeFor(String id) {
+    switch (id) {
+      case 'light': return lightTheme;
+      case 'dark':  return pureBlackTheme;
+      default:      return darkTheme;
+    }
+  }
 
   static ThemeData get darkTheme {
     return ThemeData(
@@ -160,6 +169,224 @@ class AppTheme {
         side: const BorderSide(color: border),
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      ),
+    );
+  }
+
+  // ── Light theme ─────────────────────────────────────────────────────────────
+  static ThemeData get lightTheme {
+    const bg       = Color(0xFFf2f5ef);
+    const surf     = Color(0xFFffffff);
+    const surf2    = Color(0xFFe8ede4);
+    const brd      = Color(0xFFcdd4c7);
+    const acc      = Color(0xFF2d6b26);
+    const accFg    = Color(0xFFffffff);
+    const t1       = Color(0xFF1a1f17);
+    const t2       = Color(0xFF4a5444);
+    const t3       = Color(0xFF7a8573);
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.light,
+      colorScheme: const ColorScheme.light(
+        primary: acc,
+        secondary: Color(0xFF4a8a3f),
+        surface: surf,
+        onPrimary: accFg,
+        onSurface: t1,
+      ),
+      scaffoldBackgroundColor: bg,
+      textTheme: TextTheme(
+        displayLarge:  GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 48),
+        headlineLarge: GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 28),
+        headlineMedium:GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 22),
+        titleLarge:    GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w600, fontSize: 17),
+        bodyLarge:     GoogleFonts.inter(color: t1, fontWeight: FontWeight.w400, fontSize: 15),
+        bodyMedium:    GoogleFonts.inter(color: t2, fontWeight: FontWeight.w400, fontSize: 14),
+        bodySmall:     GoogleFonts.inter(color: t3, fontWeight: FontWeight.w400, fontSize: 12),
+        labelLarge:    GoogleFonts.inter(color: t2, fontWeight: FontWeight.w500, fontSize: 13),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: surf,
+        foregroundColor: t1,
+        elevation: 0,
+        shadowColor: brd,
+        titleTextStyle: GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 22),
+      ),
+      cardTheme: CardThemeData(
+        color: surf,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: brd),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: acc,
+          foregroundColor: accFg,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w700, fontSize: 15),
+          elevation: 0,
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: acc,
+        foregroundColor: accFg,
+        shape: CircleBorder(),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surf,
+        indicatorColor: Colors.transparent,
+        height: 64,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final c = states.contains(WidgetState.selected) ? acc : t2;
+          return GoogleFonts.inter(color: c, fontSize: 11, fontWeight: FontWeight.w500);
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final c = states.contains(WidgetState.selected) ? acc : t2;
+          return IconThemeData(color: c, size: 22);
+        }),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: bg,
+        selectedIconTheme: const IconThemeData(color: acc),
+        unselectedIconTheme: const IconThemeData(color: t2),
+        selectedLabelTextStyle: GoogleFonts.inter(color: acc, fontWeight: FontWeight.w500, fontSize: 14),
+        unselectedLabelTextStyle: GoogleFonts.inter(color: t2, fontWeight: FontWeight.w500, fontSize: 14),
+        indicatorColor: Colors.transparent,
+      ),
+      dividerTheme: const DividerThemeData(color: brd, thickness: 1, space: 0),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: surf2,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: brd),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: acc),
+        ),
+        hintStyle: GoogleFonts.inter(color: t3, fontSize: 15),
+        labelStyle: GoogleFonts.inter(color: t2, fontSize: 13),
+      ),
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected) ? acc : brd),
+        thumbColor: WidgetStateProperty.all(Colors.white),
+      ),
+    );
+  }
+
+  // ── Pure-black / OLED theme ─────────────────────────────────────────────────
+  static ThemeData get pureBlackTheme {
+    const bg   = Color(0xFF000000);
+    const surf = Color(0xFF111111);
+    const surf2= Color(0xFF1a1a1a);
+    const brd  = Color(0xFF2a2a2a);
+    const acc  = Color(0xFFa1d494);
+    const accFg= Color(0xFF0a3909);
+    const t1   = Color(0xFFf0f0f0);
+    const t2   = Color(0xFFb0b0b0);
+    const t3   = Color(0xFF707070);
+    return ThemeData(
+      useMaterial3: true,
+      brightness: Brightness.dark,
+      colorScheme: const ColorScheme.dark(
+        primary: acc,
+        surface: surf,
+        onPrimary: accFg,
+        onSurface: t1,
+      ),
+      scaffoldBackgroundColor: bg,
+      textTheme: TextTheme(
+        displayLarge:  GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 48),
+        headlineLarge: GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 28),
+        headlineMedium:GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 22),
+        titleLarge:    GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w600, fontSize: 17),
+        bodyLarge:     GoogleFonts.inter(color: t1, fontWeight: FontWeight.w400, fontSize: 15),
+        bodyMedium:    GoogleFonts.inter(color: t2, fontWeight: FontWeight.w400, fontSize: 14),
+        bodySmall:     GoogleFonts.inter(color: t3, fontWeight: FontWeight.w400, fontSize: 12),
+        labelLarge:    GoogleFonts.inter(color: t2, fontWeight: FontWeight.w500, fontSize: 13),
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: bg,
+        foregroundColor: t1,
+        elevation: 0,
+        titleTextStyle: GoogleFonts.montserrat(color: t1, fontWeight: FontWeight.w700, fontSize: 22),
+      ),
+      cardTheme: CardThemeData(
+        color: surf,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: brd),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: acc,
+          foregroundColor: accFg,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          textStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w700, fontSize: 15),
+          elevation: 0,
+        ),
+      ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: acc,
+        foregroundColor: accFg,
+        shape: CircleBorder(),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surf,
+        indicatorColor: Colors.transparent,
+        height: 64,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final c = states.contains(WidgetState.selected) ? acc : t2;
+          return GoogleFonts.inter(color: c, fontSize: 11, fontWeight: FontWeight.w500);
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final c = states.contains(WidgetState.selected) ? acc : t2;
+          return IconThemeData(color: c, size: 22);
+        }),
+      ),
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: bg,
+        selectedIconTheme: const IconThemeData(color: acc),
+        unselectedIconTheme: const IconThemeData(color: t2),
+        selectedLabelTextStyle: GoogleFonts.inter(color: acc, fontWeight: FontWeight.w500, fontSize: 14),
+        unselectedLabelTextStyle: GoogleFonts.inter(color: t2, fontWeight: FontWeight.w500, fontSize: 14),
+        indicatorColor: Colors.transparent,
+      ),
+      dividerTheme: const DividerThemeData(color: brd, thickness: 1, space: 0),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: surf2,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: brd),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: acc),
+        ),
+        hintStyle: GoogleFonts.inter(color: t3, fontSize: 15),
+        labelStyle: GoogleFonts.inter(color: t2, fontSize: 13),
+      ),
+      switchTheme: SwitchThemeData(
+        trackColor: WidgetStateProperty.resolveWith((states) =>
+            states.contains(WidgetState.selected) ? acc : brd),
+        thumbColor: WidgetStateProperty.all(Colors.white),
       ),
     );
   }

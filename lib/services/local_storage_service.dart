@@ -8,11 +8,12 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class LocalStorageService {
-  static const String courtsBoxName = 'courts';
-  static const String sessionsBoxName = 'sessions';
-  static const String expensesBoxName = 'expenses';
+  static const String courtsBoxName       = 'courts';
+  static const String sessionsBoxName     = 'sessions';
+  static const String expensesBoxName     = 'expenses';
   static const String reservationsBoxName = 'reservations';
-  static const String tournamentsBoxName = 'tournaments';
+  static const String tournamentsBoxName  = 'tournaments';
+  static const String appPrefsBoxName     = 'appPrefs';
 
   static Future<void> init() async {
     await Hive.initFlutter();
@@ -47,6 +48,10 @@ class LocalStorageService {
     await _safeOpenBox<Expense>(expensesBoxName);
     await _safeOpenBox<Reservation>(reservationsBoxName);
     await _safeOpenBox<Tournament>(tournamentsBoxName);
+    // Generic box for app preferences (no type adapter needed)
+    if (!Hive.isBoxOpen(appPrefsBoxName)) {
+      await Hive.openBox(appPrefsBoxName);
+    }
   }
 
   static Future<void> _safeOpenBox<T>(String boxName) async {

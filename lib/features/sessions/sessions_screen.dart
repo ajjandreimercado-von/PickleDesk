@@ -35,34 +35,31 @@ class _SessionsScreenState extends ConsumerState<SessionsScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // ── App Bar ─────────────────────────────────────────────────────────
           SliverAppBar(
             pinned: true,
-            backgroundColor: Color(0xE0111410),
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-              title: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('$total total',
-                          style: GoogleFonts.inter(
-                              color: AppTheme.text2, fontSize: 12)),
-                      Text('Sessions',
-                          style: GoogleFonts.montserrat(
-                              color: AppTheme.text1,
-                              fontWeight: FontWeight.w700,
-                              fontSize: 22)),
-                    ],
-                  ),
-                  const Spacer(),
-                  Icon(Icons.filter_list, color: AppTheme.text2, size: 22),
-                ],
-              ),
+            backgroundColor: const Color(0xE0111410),
+            title: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('$total total',
+                        style: GoogleFonts.inter(
+                            color: AppTheme.text2, fontSize: 11)),
+                    Text('Sessions',
+                        style: GoogleFonts.montserrat(
+                            color: AppTheme.text1,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20)),
+                  ],
+                ),
+                const Spacer(),
+                Icon(Icons.filter_list, color: AppTheme.text2, size: 22),
+              ],
             ),
           ),
+
 
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),

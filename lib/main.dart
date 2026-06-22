@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme/app_theme.dart';
+import 'features/settings/theme_provider.dart';
 import 'routes/app_router.dart';
 import 'services/local_storage_service.dart';
 
@@ -22,11 +23,13 @@ class PickleDeskApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final themeId = ref.watch(themeProvider);
     return MaterialApp.router(
       title: 'PickleDesk',
-      theme: AppTheme.darkTheme, // Force dark theme
+      theme: AppTheme.themeFor(themeId),
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );
   }
 }
+

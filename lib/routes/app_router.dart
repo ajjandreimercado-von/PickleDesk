@@ -28,43 +28,66 @@ final GoRouter appRouter = GoRouter(
       path: '/add-session',
       builder: (context, state) => const AddSessionScreen(),
     ),
-    GoRoute(
-      path: '/reservations',
-      builder: (context, state) => const ReservationsScreen(),
-    ),
-    GoRoute(
-      path: '/analytics',
-      builder: (context, state) => const AnalyticsScreen(),
-    ),
-    GoRoute(
-      path: '/expenses',
-      builder: (context, state) => const ExpensesScreen(),
-    ),
-    GoRoute(
-      path: '/settings',
-      builder: (context, state) => const SettingsScreen(),
-    ),
-    
-    // Main tabs with StatefulShellRoute for PageView swiping
+
+    // All main sections inside the shell so the sidebar is always visible
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         return AppScaffold(navigationShell: navigationShell);
       },
       branches: [
+        // 0 – Home / Dashboard
         StatefulShellBranch(routes: [
-          GoRoute(path: '/dashboard', builder: (context, state) => const DashboardScreen()),
+          GoRoute(
+              path: '/dashboard',
+              builder: (context, state) => const DashboardScreen()),
         ]),
+        // 1 – Sessions
         StatefulShellBranch(routes: [
-          GoRoute(path: '/sessions', builder: (context, state) => const SessionsScreen()),
+          GoRoute(
+              path: '/sessions',
+              builder: (context, state) => const SessionsScreen()),
         ]),
+        // 2 – Courts
         StatefulShellBranch(routes: [
-          GoRoute(path: '/courts', builder: (context, state) => const CourtsScreen()),
+          GoRoute(
+              path: '/courts',
+              builder: (context, state) => const CourtsScreen()),
         ]),
+        // 3 – Reservations
         StatefulShellBranch(routes: [
-          GoRoute(path: '/tournaments', builder: (context, state) => const TournamentsScreen()),
+          GoRoute(
+              path: '/reservations',
+              builder: (context, state) => const ReservationsScreen()),
         ]),
+        // 4 – Tournaments
         StatefulShellBranch(routes: [
-          GoRoute(path: '/more', builder: (context, state) => const MoreScreen()),
+          GoRoute(
+              path: '/tournaments',
+              builder: (context, state) => const TournamentsScreen()),
+        ]),
+        // 5 – Analytics
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: '/analytics',
+              builder: (context, state) => const AnalyticsScreen()),
+        ]),
+        // 6 – Expenses
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: '/expenses',
+              builder: (context, state) => const ExpensesScreen()),
+        ]),
+        // 7 – Settings
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsScreen()),
+        ]),
+        // 8 – More (mobile "More" tab)
+        StatefulShellBranch(routes: [
+          GoRoute(
+              path: '/more',
+              builder: (context, state) => const MoreScreen()),
         ]),
       ],
     ),

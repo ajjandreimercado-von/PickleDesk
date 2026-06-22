@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
@@ -9,6 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../core/theme/app_theme.dart';
 import '../../shared/widgets/pd_card.dart';
 import '../sessions/session_providers.dart';
+import 'theme_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -37,7 +37,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           s.sessionType ?? ''
         ]);
       }
-      String csv = const ListToCsvConverter().convert(rows);
+      String csv = Csv().encode(rows);
       final dir = await getApplicationDocumentsDirectory();
       final path = '${dir.path}/pickledesk_sessions.csv';
       final file = File(path);
@@ -93,16 +93,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
      bg: Color(0xFF000000), card: Color(0xFF111111), accent: Color(0xFFa1d494), text: Color(0xFFf0f0f0)),
   ];
 
-  String _theme = 'default';
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/dashboard'),
-        ),
         title: Text('Settings',
             style: GoogleFonts.montserrat(
                 color: AppTheme.text1, fontWeight: FontWeight.w700, fontSize: 22)),
@@ -118,12 +112,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               // ── Theme ──
               _SectionHeader('Theme'),
               const SizedBox(height: 12),
-              Row(
-                children: _themes.map((t) {
-                  final isActive = _theme == t.id;
-                  return Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => _theme = t.id),
+              Builder(builder: (ctx) {
+                final activeTheme = ref.watch(themeProvider);
+                return Row(
+                  children: _themes.map((t) {
+                    final isActive = activeTheme == t.id;
+                    return Expanded(
+                      child: GestureDetector(
+                        onTap: () => ref.read(themeProvider.notifier).setTheme(t.id),
                       child: Padding(
                         padding: EdgeInsets.only(right: t.id != 'dark' ? 8 : 0),
                         child: AnimatedContainer(
@@ -247,7 +243,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                   );
                 }).toList(),
-              ),
+                );
+              }),
               const SizedBox(height: 28),
 
               // ── Notifications ──
